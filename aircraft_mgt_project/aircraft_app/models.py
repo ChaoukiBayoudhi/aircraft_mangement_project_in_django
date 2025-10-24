@@ -93,10 +93,10 @@ class Flight(models.Model):
     distance_km=models.PositiveIntegerField()
     altitude_max=models.PositiveIntegerField()
     status=models.CharField()
-    def __str__(self):
-        return f"{self.flight_number} ({self.aircraft.registration_number})"
+    #relationship between flight and aircraft[* - 1]
+    aircraft=models.ForeignKey(Aircraft,on_delete=models.SET_NULL,
+                                related_name='aircraft_flights',null=True, blank=True)
     
-
 # -------------- Certification Model-------------
 class Certification(models.Model):
     name = models.CharField(max_length=100)
@@ -136,5 +136,17 @@ class AircraftCommunication(models.Model):
     communication=models.ForeignKey(Communication,on_delete=models.SET_NULL,
                                     related_name='communication_history',null=True, blank=True)
     duration=models.DurationField()
-    satrt_date_time=models.DateTimeField(auto_now=True)
+    satart_date_time=models.DateTimeField(auto_now=True)
+
+#Association class between flight and crew member
+class FlightCrewMember(models.Model):
+    flight=models.ForeignKey(Flight,on_delete=models.SET_NULL,
+                            related_name='crew_members',null=True, blank=True, unique=True)
+    crew_member=models.ForeignKey(CrewMember,on_delete=models.SET_NULL,
+                                related_name='flight_crew_members',null=True, blank=True)
+    role=models.CharField(max_length=10,choices=CrewMemberRole.choices)
+    start_time=models.DateTimeField()
+    duration=models.DurationField()
+    class Meta:
+    
     

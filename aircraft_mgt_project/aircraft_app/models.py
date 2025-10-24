@@ -1,18 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-class AircraftType(models.TextChoices):
-    COMMERCIAL = 'Commercial','Commercial Aircraft'
-    PRIVATE = 'Private','Private Aircraft'
-    MILITARY = 'Military','Military Aircraft'
-    CARGO = 'Cargo','Cargo Aircraft'
+from .enumerations import AircraftType, AircraftStatus, CrewMemberRole
+from django.contrib.auth.models import User
 
-class AircraftStatus(models.TextChoices):
-    ACTIVE = 'Active','Active'
-    INACTIVE = 'Inactive','Inactive'
-    MAINTENANCE = 'Maintenance','Maintenance'
-    STORAGE = 'Storage','Storage'
-    RETIRED = 'Retired','Retired'
-    OTHER = 'Other','Other'
 
 class Aircraft(models.Model):
     registration_number = models.CharField(max_length=255, primary_key=True)
@@ -31,6 +21,9 @@ class Aircraft(models.Model):
     fuel_capacity = models.DecimalField(max_digits=10, decimal_places=2)
     max_speed=models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(3000)])
     satus=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)
+    class Meta:
+        db_table='aircraft'
+        ordering=['name','-model']
     
 #----------sensor Model---------------
 
@@ -55,7 +48,7 @@ class Sensor(models.Model):
 
     
 #---------------communication model----------
-class communication(models.Model):
+class Communication(models.Model):
     COMM_TYPES = [
         ('RAD', 'Radio'),
         ('DAT', 'Data Link'),
@@ -80,6 +73,12 @@ class communication(models.Model):
     signal_strength = models.DecimalField(max_digits=6, decimal_places=2)
     timestamp = models.DateTimeField()
     duration_seconds = models.PositiveIntegerField(null=True, blank=True)
+    #relationship between communication and aircraft[* - *] through the association class AircraftCommunication
+    aircraft_communications=models.ManyToManyField(Aircraft,
+                                                  through='AircraftCommunication',
+                                                  through_fields=('communication','aircraft')
+                                                )
+    
 
     
 #---------------flight model ------------
@@ -110,13 +109,8 @@ class Certification(models.Model):
 
 class  CrewMember(models.Model):
     employee_id=models.CharField(max_length=20,unique=True)
-    role_choices = [
-        ('PIL', 'Pilot'),
-        ('COP', 'Co-Pilot'),
-        ('ENG', 'Engineer'),
-        ('ATT', 'Flight Attendant'),
-    ]
-    role=models.CharField(max_length=10,choices=role_choices)
+    
+    role=models.CharField(max_length=10,choices=CrewMemberRole.choices)
     hire_date=models.DateField()
     certifications = models.ManyToManyField(Certification, related_name='crew_members')
     total_flight_hours = models.PositiveIntegerField()
@@ -124,5 +118,23 @@ class  CrewMember(models.Model):
     emergency_contact = models.CharField(max_length=100)
     emergency_phone = models.CharField(max_length=20)
     is_active = models.BooleanField(default=True)
+    #relationship between crew member and User model(defined by Django)[1-1]
+    user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='crew_member')
+    #relationship between crew member and certification[* - *]
+    certifications=models.ManyToManyField(Certification,
+                                          blank=True,
+                                            related_name='crew_member_certifications')
+    active_certifications = models.ManyToManyField(Certification,
+                                               blank=True,
+                                               related_name='crew_member_active_certifications')
+    unavailability_dates=models.JSONField(default=list)
 
+#Association class between aircraft and communication for history tracking
+class AircraftCommunication(models.Model):
+    aircraft=models.ForeignKey(Aircraft,on_delete=models.SET_NULL,
+                                related_name='communication_aircraft',null=True, blank=True)
+    communication=models.ForeignKey(Communication,on_delete=models.SET_NULL,
+                                    related_name='communication_history',null=True, blank=True)
+    duration=models.DurationField()
+    satrt_date_time=models.DateTimeField(auto_now=True)
     

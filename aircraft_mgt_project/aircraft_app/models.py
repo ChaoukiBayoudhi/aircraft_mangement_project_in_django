@@ -22,8 +22,9 @@ class Aircraft(models.Model):
     max_speed=models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(3000)])
     satus=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)
     class Meta:
-        db_table='aircraft'
-        ordering=['name','-model']
+        db_table='aircraft' # this is the name of the table in the database
+        ordering=['name','-model'] #the tuples in the database will be ordered by name and model in descending order
+        indexes=[models.Index(fields=['name','model'])] #the index will be created on the name and model fields
     
 #----------sensor Model---------------
 
@@ -43,7 +44,7 @@ class Sensor(models.Model):
     #relationship between sensor and aircraft (*-1)
     aircraft=models.ForeignKey(Aircraft,on_delete=models.SET_NULL,
                                 null=True,blank=True)
-
+    
     
 #---------------communication model----------
 class Communication(models.Model):
@@ -89,6 +90,10 @@ class Certification(models.Model):
     issuing_authority = models.CharField(max_length=100)
     valid_from = models.DateField()
     valid_until = models.DateField()
+    class Meta:
+        db_table='certification'
+        ordering=['name']
+        indexes=[models.Index(fields=['name'])]
 
     
 #------------ CrewMember model-----------
@@ -114,6 +119,7 @@ class  CrewMember(models.Model):
                                                blank=True,
                                                related_name='crew_member_active_certifications')
     unavailability_dates=models.JSONField(default=list)
+    
 
 #Association class between aircraft and communication for history tracking
 class AircraftCommunication(models.Model):
@@ -124,18 +130,7 @@ class AircraftCommunication(models.Model):
     duration=models.DurationField()
     satart_date_time=models.DateTimeField(auto_now=True)
 
-#Association class between flight and crew member
-class FlightCrewMember(models.Model):
-    flight=models.ForeignKey(Flight,on_delete=models.SET_NULL,
-                            related_name='crew_members',null=True, blank=True, unique=True)
-    crew_member=models.ForeignKey(CrewMember,on_delete=models.SET_NULL,
-                                related_name='flight_crew_members',null=True, blank=True)
-    role=models.CharField(max_length=10,choices=CrewMemberRole.choices)
-    start_time=models.DateTimeField()
-    duration=models.DurationField()
-    class Meta:
-        pass
-    
+
     
 # ---------------- Additional domain models ----------------
 

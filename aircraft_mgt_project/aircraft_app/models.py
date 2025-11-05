@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from .enumerations import AircraftType, AircraftStatus, CrewMemberRole, SensorType, SensorStatus, CommunicationType, FlightPhase, FlightStatus, MaintenanceStatus, PartCategory, SeverityLevel, FuelType, WorkOrderPriority
 from django.contrib.auth.models import User
 
-
 class Aircraft(models.Model):
     registration_number = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)

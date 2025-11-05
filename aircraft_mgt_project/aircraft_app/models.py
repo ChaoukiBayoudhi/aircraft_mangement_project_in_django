@@ -24,6 +24,8 @@ class Aircraft(models.Model):
         db_table='aircraft' # this is the name of the table in the database
         ordering=['name','-model'] #the tuples in the database will be ordered by name and model in descending order
         indexes=[models.Index(fields=['name','model'])] #the index will be created on the name and model fields
+        verbose_name='Aircraft'
+        verbose_name_plural='Aircrafts'
     
 #----------sensor Model---------------
 
@@ -128,6 +130,17 @@ class AircraftCommunication(models.Model):
                                     related_name='communication_history',null=True, blank=True)
     duration=models.DurationField()
     satart_date_time=models.DateTimeField(auto_now=True)
+
+class FlightCrewMember(models.Model):
+    flight=models.ForeignKey(Flight,on_delete=models.CASCADE,related_name='crew_members')
+    crew_member=models.ForeignKey(CrewMember,on_delete=models.CASCADE,related_name='flights')
+    role=models.CharField(max_length=10,choices=CrewMemberRole.choices)
+    assigned_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table='flight_crew_member'
+        ordering=['flight','crew_member']
+        indexes=[models.Index(fields=['flight','crew_member'])]
+        unique_together=['flight','crew_member']
 
 
     

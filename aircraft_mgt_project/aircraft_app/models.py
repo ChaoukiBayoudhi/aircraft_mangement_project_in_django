@@ -20,12 +20,7 @@ class Aircraft(models.Model):
     fuel_capacity = models.DecimalField(max_digits=10, decimal_places=2)
     max_speed=models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(3000)])
     satus=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)
-    class Meta:
-        db_table='aircraft' # this is the name of the table in the database
-        ordering=['name','-model'] #the tuples in the database will be ordered by name and model in descending order
-        indexes=[models.Index(fields=['name','model'])] #the index will be created on the name and model fields
-        verbose_name='Aircraft'
-        verbose_name_plural='Aircrafts'
+    
     
 #----------sensor Model---------------
 
@@ -91,11 +86,7 @@ class Certification(models.Model):
     issuing_authority = models.CharField(max_length=100)
     valid_from = models.DateField()
     valid_until = models.DateField()
-    class Meta:
-        db_table='certification'
-        ordering=['name']
-        indexes=[models.Index(fields=['name'])]
-
+    
     
 #------------ CrewMember model-----------
 

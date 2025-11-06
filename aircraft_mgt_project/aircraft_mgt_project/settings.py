@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "aircraft_app",
-    "rest_framework", #DRF : Django Rest Framework for API development
-    "corsheaders",
+    
 ]
 
 MIDDLEWARE = [

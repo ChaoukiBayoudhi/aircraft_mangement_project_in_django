@@ -22,5 +22,4 @@ import aircraft_app
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/',include('aircraft_app.urls'))
 ]

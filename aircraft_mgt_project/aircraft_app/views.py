@@ -1,10 +1,13 @@
 from rest_framework import viewsets
-from .models import Aircraft, Sensor, Flight, CrewMember, Certification, MaintenanceRecord, FlightCrewMember 
-from .serializers import AircraftSerializer, SensorSerializer, FlightSerializer, CrewMemberSerializer, CertificationSerializer, MaintenanceRecordSerializer, FlightCrewMemberSerializer
-
+from .models import Aircraft, AircraftCommunication, Sensor, Flight, CrewMember, Certification, MaintenanceRecord, FlightCrewMember 
+from .serializers import AircraftCommunicationSerializer, AircraftSerializer, SensorSerializer, FlightSerializer, CrewMemberSerializer, CertificationSerializer, MaintenanceRecordSerializer, FlightCrewMemberSerializer
+from rest_framework.decorators import action
 class AircraftViewSet(viewsets.ModelViewSet):
     queryset = Aircraft.objects.all()
     serializer_class = AircraftSerializer
+    @action(detail=False, methods=['get'], url_path='status/(?P<status>[^/.]+)')
+    def get_aircrafts_by_status(self, request):
+            pass
 
 class SensorViewSet(viewsets.ModelViewSet):
     queryset = Sensor.objects.all()
@@ -30,4 +33,9 @@ class MaintenanceRecordViewSet(viewsets.ModelViewSet):
 class FlightCrewMemberViewSet(viewsets.ModelViewSet):
     queryset = FlightCrewMember.objects.all()
     serializer_class = FlightCrewMemberSerializer
+
+class AircraftCommunicationViewSet(viewsets.ModelViewSet):
+    queryset = AircraftCommunication.objects.all()
+    serializer_class = AircraftCommunicationSerializer
+
     

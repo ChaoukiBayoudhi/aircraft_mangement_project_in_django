@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Aircraft, Sensor, Flight, CrewMember, Certification, MaintenanceRecord, FlightCrewMember
+from .models import Aircraft, AircraftCommunication, Sensor, Flight, CrewMember, Certification, MaintenanceRecord, FlightCrewMember
 class AircraftSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aircraft
@@ -32,5 +32,10 @@ class FlightCrewMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlightCrewMember
         fields = '__all__'
+
+class AircraftCommunicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=AircraftCommunication
+        fields='__all__'
 
 

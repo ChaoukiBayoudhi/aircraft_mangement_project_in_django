@@ -27,6 +27,9 @@ class Aircraft(models.Model):
         indexes=[models.Index(fields=['registration_number'])]
         verbose_name='Aircraft'
         verbose_name_plural='Aircrafts'
+
+    def __str__(self):
+        return f'{self.registration_number} - {self.name}-{self.model}'
     
     
 #----------sensor Model---------------

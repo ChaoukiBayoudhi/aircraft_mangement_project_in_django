@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "q#s$8_46!4k$s3jo$ht!4k%)tzh_xl7=kkpuo_54jlzam-wjon"
+SECRET_KEY = r"m0svh-%g@f7&(*ypaod!4pt*g1y7!)&et6!1t(!@f$$0^+%s8!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,8 +80,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "aircraft_db",
-        "USER":"bis2_user",
-        "PASSWORD":"5yS+KMB92Oba0V/ATQoweTJy2R68lWlNhJiuL05aOYI=",
+        "USER":"bis1_user",
+        "PASSWORD":"9YeBo147eH51XpbTYj+i0z7Exqpfw23YC4dnCH3kGcY=",
         "HOST":"127.0.0.1", #localhost
         "PORT":"5432", #postgresql port
     },

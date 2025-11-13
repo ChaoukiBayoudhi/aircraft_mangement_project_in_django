@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-&nb+r@v1+y3wc)5hxyfjx^a4**(_hvhbos56)l1m$n72(8t$m%"
+SECRET_KEY = "q#s$8_46!4k$s3jo$ht!4k%)tzh_xl7=kkpuo_54jlzam-wjon"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "aircraft_app",
+    "rest_framework",
+    "corsheaders",
     
 ]
 
@@ -76,8 +78,12 @@ WSGI_APPLICATION = "aircraft_mgt_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "aircraft_db",
+        "USER":"bis2_user",
+        "PASSWORD":"5yS+KMB92Oba0V/ATQoweTJy2R68lWlNhJiuL05aOYI=",
+        "HOST":"127.0.0.1", #localhost
+        "PORT":"5432", #postgresql port
     },
     
 }

@@ -119,6 +119,10 @@ class Flight(models.Model):
         ]
         verbose_name = 'Flight'
         verbose_name_plural = 'Flights'
+
+    #redefinition of __str__ function
+    def __str__(self):
+        return f'{self.flight_number} - {self.departure_airport} to {self.arrival_airport}'
     
 # -------------- Certification Model-------------
 class Certification(models.Model):

@@ -80,8 +80,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "aircraft_db",
-        "USER":"bis1_user",
-        "PASSWORD":"9YeBo147eH51XpbTYj+i0z7Exqpfw23YC4dnCH3kGcY=",
+        "USER":"bis2_user",
+        "PASSWORD":"iqmaqZvKY7QzVbDX+g+1VTY5GJL9bF+9SPWRTu8QqCU=",
         "HOST":"127.0.0.1", #localhost
         "PORT":"5432", #postgresql port
     },

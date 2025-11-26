@@ -7,8 +7,8 @@ name = "pypi"
 django = "*"
 pillow = "*"
 djangorestframework = "*"
-psycopg2 = "*"
 django-cors-headers = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

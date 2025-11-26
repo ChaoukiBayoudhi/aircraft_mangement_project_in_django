@@ -19,7 +19,7 @@ class Aircraft(models.Model):
     manufacturing_date = models.DateField(auto_now_add=True)
     fuel_capacity = models.DecimalField(max_digits=10, decimal_places=2)
     max_speed=models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(3000)])
-    satus=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)
+    status=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)
     class Meta:
         db_table='aircraft' # this is the name of the table in the database
         ordering=['name','-model'] #the tuples in the database will be ordered by name and model in descending order

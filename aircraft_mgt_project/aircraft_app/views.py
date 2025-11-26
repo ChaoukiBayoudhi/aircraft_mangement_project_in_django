@@ -15,7 +15,7 @@ class AircraftViewSet(viewsets.ModelViewSet):
     #get aircrafts by status (as path parameter)
     @action(detail=False, methods=['GET'],url_path='status/(?P<aircraft_status>[^/.]+)')
     def get_aircrafts_by_status(self, request, aircraft_status):
-        qs=Aircraft.objects.filter(satus=aircraft_status)
+        qs=Aircraft.objects.filter(status=aircraft_status)
         if not qs.exists():
             return Response({"message":"No aircrafts found with the status"},status.HTTP_204_NO_CONTENT)
         aircrafts=AircraftSerializer(qs,many=True)

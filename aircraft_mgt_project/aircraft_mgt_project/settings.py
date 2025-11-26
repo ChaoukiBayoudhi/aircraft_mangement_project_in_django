@@ -77,8 +77,13 @@ WSGI_APPLICATION = "aircraft_mgt_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "aircraft_db1",
+        "USER":"bi1_user",
+        "PASSWORD":"pR4u3JZHsUlffVqTt1LXcGuHc3IowLd9Z88oxMBlHvs=",
+        "HOST":'localhost',
+        "PORT": 5432
+
     },
     
 }

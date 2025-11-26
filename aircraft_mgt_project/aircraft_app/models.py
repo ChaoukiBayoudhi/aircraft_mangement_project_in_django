@@ -46,6 +46,11 @@ class Sensor(models.Model):
     aircraft=models.ForeignKey(Aircraft,on_delete=models.SET_NULL,
                                 null=True,blank=True)
     
+    class Meta:
+        db_table='sensor'
+        ordering=['name']
+        verbose_name='Sensor'
+        verbose_name_plural='Sensors'
     
 #---------------communication model----------
 class Communication(models.Model):
@@ -67,7 +72,11 @@ class Communication(models.Model):
                                                   through_fields=('communication','aircraft')
                                                 )
     
-
+    class Meta:
+        db_table='communication'
+        ordering=['-timestamp']
+        verbose_name='Communication'
+        verbose_name_plural='Communications'
     
 #---------------flight model ------------
 
@@ -85,6 +94,11 @@ class Flight(models.Model):
     aircraft=models.ForeignKey(Aircraft,on_delete=models.SET_NULL,
                                 related_name='aircraft_flights',null=True, blank=True)
     
+    class Meta:
+        db_table='flight'
+        ordering=['flight_number']
+        verbose_name='Flight'
+        verbose_name_plural='Flights'
 # -------------- Certification Model-------------
 class Certification(models.Model):
     name = models.CharField(max_length=100)
@@ -121,6 +135,11 @@ class  CrewMember(models.Model):
                                                related_name='crew_member_active_certifications')
     unavailability_dates=models.JSONField(default=list)
     
+    class Meta:
+        db_table='crew_member'
+        ordering=['employee_id']
+        verbose_name='Crew Member'
+        verbose_name_plural='Crew Members'
 
 #Association class between aircraft and communication for history tracking
 class AircraftCommunication(models.Model):
@@ -130,6 +149,12 @@ class AircraftCommunication(models.Model):
                                     related_name='communication_history',null=True, blank=True)
     duration=models.DurationField()
     satart_date_time=models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table='aircraft_communication'
+        ordering=['-satart_date_time']
+        verbose_name='Aircraft Communication'
+        verbose_name_plural='Aircraft Communications'
 
 class FlightCrewMember(models.Model):
     flight=models.ForeignKey(Flight,on_delete=models.CASCADE,related_name='crew_members')
@@ -155,11 +180,24 @@ class Airport(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
+    class Meta:
+        db_table='airport'
+        ordering=['iata_code']
+        verbose_name='Airport'
+        verbose_name_plural='Airports'
+
 class Route(models.Model):
     origin = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name='routes_originating')
     destination = models.ForeignKey(Airport, on_delete=models.PROTECT, related_name='routes_destination')
     distance_km = models.PositiveIntegerField()
     is_international = models.BooleanField(default=False)
+
+    class Meta:
+        db_table='route'
+        ordering=['origin','destination']
+        verbose_name='Route'
+        verbose_name_plural='Routes'
+        unique_together=['origin','destination']
 
 class FlightPlan(models.Model):
     flight = models.OneToOneField(Flight, on_delete=models.CASCADE, related_name='plan')
@@ -170,6 +208,12 @@ class FlightPlan(models.Model):
     fuel_required_kg = models.DecimalField(max_digits=10, decimal_places=2)
     remarks = models.TextField(blank=True)
 
+    class Meta:
+        db_table='flight_plan'
+        ordering=['flight']
+        verbose_name='Flight Plan'
+        verbose_name_plural='Flight Plans'
+
 class WeatherReport(models.Model):
     airport = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name='weather_reports')
     timestamp = models.DateTimeField()
@@ -178,12 +222,24 @@ class WeatherReport(models.Model):
     visibility_km = models.DecimalField(max_digits=4, decimal_places=1)
     metar = models.TextField()
 
+    class Meta:
+        db_table='weather_report'
+        ordering=['airport','-timestamp']
+        verbose_name='Weather Report'
+        verbose_name_plural='Weather Reports'
+
 class MaintenanceTask(models.Model):
     code = models.CharField(max_length=20, unique=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     estimated_hours = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)])
     category = models.CharField(max_length=3, choices=PartCategory.choices, default=PartCategory.OTHER)
+
+    class Meta:
+        db_table='maintenance_task'
+        ordering=['code']
+        verbose_name='Maintenance Task'
+        verbose_name_plural='Maintenance Tasks'
 
 class MaintenanceRecord(models.Model):
     aircraft = models.ForeignKey(Aircraft, on_delete=models.CASCADE, related_name='maintenance_records')
@@ -197,6 +253,12 @@ class MaintenanceRecord(models.Model):
     total_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     notes = models.TextField(blank=True)
 
+    class Meta:
+        db_table='maintenance_record'
+        ordering=['-opened_at']
+        verbose_name='Maintenance Record'
+        verbose_name_plural='Maintenance Records'
+
 class Part(models.Model):
     part_number = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
@@ -204,12 +266,24 @@ class Part(models.Model):
     unit_cost = models.DecimalField(max_digits=10, decimal_places=2)
     stock_quantity = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        db_table='part'
+        ordering=['part_number']
+        verbose_name='Part'
+        verbose_name_plural='Parts'
+
 class PartInstallation(models.Model):
     aircraft = models.ForeignKey(Aircraft, on_delete=models.CASCADE, related_name='part_installations')
     part = models.ForeignKey(Part, on_delete=models.CASCADE, related_name='installations')
     installed_on = models.DateTimeField()
     removed_on = models.DateTimeField(null=True, blank=True)
     hours_used = models.DecimalField(max_digits=8, decimal_places=2, validators=[MinValueValidator(0)])
+
+    class Meta:
+        db_table='part_installation'
+        ordering=['-installed_on']
+        verbose_name='Part Installation'
+        verbose_name_plural='Part Installations'
 
 class FuelLog(models.Model):
     aircraft = models.ForeignKey(Aircraft, on_delete=models.CASCADE, related_name='fuel_logs')
@@ -219,6 +293,12 @@ class FuelLog(models.Model):
     total_price = models.DecimalField(max_digits=12, decimal_places=2)
     supplier = models.CharField(max_length=100)
     refueled_at = models.DateTimeField()
+
+    class Meta:
+        db_table='fuel_log'
+        ordering=['-refueled_at']
+        verbose_name='Fuel Log'
+        verbose_name_plural='Fuel Logs'
 
 class IncidentReport(models.Model):
     flight = models.ForeignKey(Flight, on_delete=models.SET_NULL, null=True, blank=True, related_name='incidents')
@@ -230,4 +310,9 @@ class IncidentReport(models.Model):
     description = models.TextField()
     corrective_action = models.TextField(blank=True)
     
+    class Meta:
+        db_table='incident_report'
+        ordering=['-occurred_at']
+        verbose_name='Incident Report'
+        verbose_name_plural='Incident Reports'
     

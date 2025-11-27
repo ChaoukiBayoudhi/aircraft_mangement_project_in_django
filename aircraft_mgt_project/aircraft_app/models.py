@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 from .enumerations import AircraftType, AircraftStatus, CrewMemberRole, SensorType, SensorStatus, CommunicationType, FlightPhase, FlightStatus, MaintenanceStatus, PartCategory, SeverityLevel, FuelType, WorkOrderPriority
 from django.contrib.auth.models import User
 
@@ -16,7 +17,7 @@ class Aircraft(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='aircrafts/', null=True, blank=True)
     #auto_now_add=True means the date will be set to the current when the object is created
-    manufacturing_date = models.DateField(auto_now_add=True)
+    manufacturing_date = models.DateField(default=timezone.now())
     fuel_capacity = models.DecimalField(max_digits=10, decimal_places=2)
     max_speed=models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(3000)])
     status=models.CharField(max_length=255, choices=AircraftStatus.choices, default=AircraftStatus.ACTIVE)

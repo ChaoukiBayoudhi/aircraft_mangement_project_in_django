@@ -1,4 +1,5 @@
 from datetime import timedelta
+from django.db.models import QuerySet
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -41,7 +42,7 @@ class AircraftViewSet(viewsets.ModelViewSet):
     #update all aircrafts status to Retired if they are very old
     @action(detail=False, methods=['PUT','PATCH'],url_path='update-retired-aircrafts')
     def update_retired_aircrafts(self, request):
-        qs=Aircraft.objects.filter(manufacturing_date__lt=timezone.now()-timedelta(days=3650))
+        qs:QuerySet=Aircraft.objects.filter(manufacturing_date__lt=timezone.now()-timedelta(days=3650))
         if not qs.exists():
             return Response({"message":"No aircrafts found to update"},status.HTTP_204_NO_CONTENT)
         qs.update(status=AircraftStatus.RETIRED)
